@@ -2,47 +2,61 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import db from './config/db.js';
-import taskRoutes from './routes/taskRoutes.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 
-// Charger les variables d'environnement
-dotenv.config();
 
 const app = express();
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+// Charger les variables d'environnement
+dotenv.config();
 
 // Middleware
 app.use(bodyParser.json());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'frontend')));
+
 
 // Routes
-app.use('/api', taskRoutes);
+
+
+
 
 // le lien de route http://localhost:3000/
-// app.get('/', (req, res) => {
-//     res.send('La route marche')
-// });
-
 app.get('/', (req, res) => {
-    const query = 'SELECT * FROM tasks';
+    res.sendFile(path.join(__dirname, '../frontend/Todo.html'));
+});
 
-    db.query(query, (err, results) => {
+// Route pour ajouter une tâche
+app.post('/addTasks', (req, res) => {
+    const { nameTask, descriptionTask } = req.body;
+    if (!nameTask || !descriptionTask) {
+        return res.status(400).json({ error: 'Les champs sont obligatoires.' });
+    }
+
+    const query = 'INSERT INTO tasks (nameTask, descriptionTask) VALUES (?, ?)';
+    db.query(query, [nameTask, descriptionTask], (err) => {
         if (err) {
-            console.error('Erreur lors de la récupération des tâches :', err.message);
-            res.status(500).send('Erreur lors de la récupération des données.');
-            return;
+            console.error('Erreur lors de l\'ajout de la tâche :', err.message);
+            return res.status(500).json({ error: 'Erreur serveur.' });
         }
-
-        // Affiche les données dans la réponse
-        res.send(`
-            <h1>Liste des Tâches</h1>
-            <ul>
-                ${results.map(task => `<li><strong>${task.nameTask}</strong>: ${task.descriptionTask}</li>`).join('')}
-            </ul>
-        `);
+        res.status(201).json({ message: 'Tâche ajoutée avec succès.' });
     });
 });
 
+// Route pour récupérer les tâches
+app.get('/displayTasks', (req, res) => {
+    const query = 'SELECT * FROM tasks';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erreur lors de la récupération des tâches :', err.message);
+            return res.status(500).json({ error: 'Erreur serveur.' });
+        }
+        res.status(200).json(results);
+    });
+});
 
 // Démarrer le serveur
 const PORT = process.env.PORT || 3000;

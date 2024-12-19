@@ -1,34 +1,29 @@
 import mysql from 'mysql2';
 // import mysql from 'mysql';
 import dotenv from 'dotenv';
-import { resolve } from 'path'
+// import { resolve } from 'path'
 
-// Charger les variables d'environnement
-dotenv.config({ path: '/Users/fouadlamnaouar/Hetic/TP_DEVOPS/.env'});
+// // Charger les variables d'environnement
+// dotenv.config({ path: '/Users/fouadlamnaouar/Hetic/TP_DEVOPS/.env'});
 
 // Créer une connexion MySQL
 const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    host: 'localhost',
+    port: '8889',
+    user: 'root',
+    password: 'root',
+    database: 'devops',
 });
 
-// Connecter à la base de données
+// Tester la connexion immédiatement après sa création
 db.connect((err) => {
     if (err) {
         console.error('Erreur de connexion à la base de données :', err.message);
+        process.exit(1); // Arrête le processus si la connexion échoue
+    } else {
+        console.log('Connecté à la base de données MySQL');
     }
-    console.log('Connecté à la base de données MySQL');
 });
 
-console.log('Configuration MySQL :', {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    port: process.env.DB_PORT,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-});
 
 export default db;

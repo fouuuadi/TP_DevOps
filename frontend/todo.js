@@ -1,49 +1,56 @@
-document.getElementById('ajout').addEventListener('click', Todo);
+const taskForm = document.getElementById('taskForm');
+const taskTableBody = document.getElementById('taskTableBody');
 
-function Todo() {
-    const tacheListe = document.getElementById('taskList');
-    const tache = document.getElementById('tache');
+// Fonction pour récupérer et afficher les tâches
+async function fetchTasks() {
+    try {
+        const response = await fetch('/api/displayTasks');
+        const tasks = await response.json();
 
-    const tacheTexte = tache.value;
-
-    const li = document.createElement('li');
-
-    //Vérification si le champ de texte est vide
-    if (tacheTexte === "") {
-        alert("Veuillez entrer une tâche.");
-        return;
+        // Vider le tableau avant d'insérer les tâches
+        taskTableBody.innerHTML = '';
+        tasks.forEach(task => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${task.id}</td>
+                <td>${task.nameTask}</td>
+                <td>${task.descriptionTask}</td>
+            `;
+            taskTableBody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Erreur lors de la récupération des tâches :', error);
     }
+}
 
-    //Création du bouton de suppression
-    const boutonSupprimer = document.createElement('button');
-    boutonSupprimer.textContent = "Supprimer";
-    boutonSupprimer.classList.add('supprimer');
-    boutonSupprimer.addEventListener('click', () => {li.remove();});
+// Fonction pour ajouter une nouvelle tâche
+taskForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-    //Création du bouton de modification
-    const boutonModifier = document.createElement('button');
-    boutonModifier.textContent = "Modifier";
-    boutonModifier.classList.add('modifier');
-    boutonModifier.addEventListener('click', () => {
-        li.childNodes[0].textContent = prompt("Modifier la tâche", li.childNodes[0].textContent);
+    const nameTask = document.getElementById('nameTask').value;
+    const descriptionTask = document.getElementById('descriptionTask').value;
 
-        if (li.childNodes[0].textContent === "") {
-            alert("Veuillez entrer une tâche.");
-            li.childNodes[0].textContent = prompt("Modifier la tâche", li.childNodes[0].textContent);
-            return;
-        };
+    try {
+        const response = await fetch('/api/addTasks', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ nameTask, descriptionTask }),
+        });
 
-    });
+        if (response.ok) {
+            alert('Tâche ajoutée avec succès');
+            taskForm.reset();
+            fetchTasks(); // Rafraîchir la liste des tâches
+        } else {
+            const error = await response.json();
+            alert(`Erreur : ${error.message}`);
+        }
+    } catch (error) {
+        console.error('Erreur lors de l\'ajout de la tâche :', error);
+    }
+});
 
-    //Ajout du texte de la tâche et du bouton de suppression à la tâche
-    li.textContent = tacheTexte;
-    li.appendChild(boutonModifier);
-    li.appendChild(boutonSupprimer);
-
-    //Effacer le champ de texte
-    tache.value = "";
-
-    tacheListe.appendChild(li);
-};
-
-
+// Charger les tâches au démarrage
+fetchTasks();
