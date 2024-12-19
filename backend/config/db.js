@@ -9,10 +9,10 @@ import dotenv from 'dotenv';
 // Créer une connexion MySQL
 const db = mysql.createConnection({
     host: 'localhost',
-    port: '8889',
+    port: '3306',
     user: 'root',
     password: 'root',
-    database: 'devops',
+    database: 'DevOps',
 });
 
 // Tester la connexion immédiatement après sa création
