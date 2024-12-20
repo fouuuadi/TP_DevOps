@@ -4,11 +4,11 @@ import dotenv from 'dotenv';
 // import { resolve } from 'path'
 
 // // Charger les variables d'environnement
-// dotenv.config({ path: '/Users/fouadlamnaouar/Hetic/TP_DEVOPS/.env'});
+// dotenv.config();
 
 // Créer une connexion MySQL
 const db = mysql.createConnection({
-    host: 'localhost',
+    host: 'mysql',
     port: '3306',
     user: 'root',
     password: 'root',
