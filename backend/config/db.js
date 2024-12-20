@@ -13,6 +13,7 @@ const db = mysql.createConnection({
     user: 'root',
     password: 'root',
     database: 'DevOps',
+    charset: 'utf8mb4',
 });
 
 // Tester la connexion immédiatement après sa création

@@ -27,8 +27,9 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: DevOps
     volumes:
-      - mysql_data:/var/lib/mysql
+      # - mysql_data:/var/lib/mysql
+      - ./backend/config/Bdd.sql:/docker-entrypoint-initdb.d/Bdd.sql
     restart: always
 
-volumes:
-  mysql_data:
+# volumes:
+#   mysql_data:

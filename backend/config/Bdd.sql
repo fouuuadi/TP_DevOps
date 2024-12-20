@@ -1,5 +1,7 @@
+SET NAMES 'utf8mb4';
+
 -- Créer la base de données
-CREATE DATABASE IF NOT EXISTS DevOps;
+CREATE DATABASE IF NOT EXISTS DevOps CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Utiliser la base de données
 USE DevOps;
@@ -7,8 +9,8 @@ USE DevOps;
 -- Créer la table tasks
 CREATE TABLE IF NOT EXISTS tasks (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nameTask VARCHAR(255) NOT NULL,
-    descriptionTask TEXT
+    nameTask VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    descriptionTask TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 );
 
 -- Insérer les données dans la table tasks
