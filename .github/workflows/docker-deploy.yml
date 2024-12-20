@@ -1,15 +1,9 @@
-name: Build Docker image
-  uses: docker/build-push-action@v4
-  with:
-    context: .  # Indique le contexte (le dossier racine de votre projet)
-    file: ./Dockerfile  # Spécifie le chemin vers votre Dockerfile
-    push: true  # Active le push de l'image vers DockerHub
-    tags: fouador/tp_devops:latest  # Définit le tag de l'image
+name: Build and Push Docker Image
 
 on:
   push:
     branches:
-      - main  # Le workflow se déclenche uniquement sur les commits dans la branche "main"
+      - main  
 
 jobs:
   build:
@@ -28,7 +22,7 @@ jobs:
     - name: Build Docker image
       uses: docker/build-push-action@v4
       with:
-        context: .
-        file: ./Dockerfile  # Spécifiez le chemin vers votre Dockerfile
-        push: true
-        tags: fouador/tp_devops:latest
+        context: .  
+        file: ./Dockerfile 
+        push: true  
+        tags: fouador/tp_devops:latest  
